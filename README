@@ -1,0 +1,3 @@
+PHP makes QRCodes and returns a base64 version along with other parameters.
+
+Sencha Touch does the viewing and saving to local storage.
