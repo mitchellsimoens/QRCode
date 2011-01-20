@@ -36,10 +36,21 @@ App.UI = Ext.extend(Ext.Panel, {
 						text    : "Create QR Code",
 						scope   : this,
 						handler : this.createQRCode
+					},
+					{
+						text    : "Clear Local Storage",
+						ui      : "decline",
+						scope   : this,
+						handler : this.clearStorage
 					}
 				]
 			}
 		]
+	},
+	
+	clearStorage: function() {
+		window.localStorage.clear();
+		location.reload(true);
 	},
 	
 	buildList: function() {
@@ -73,6 +84,9 @@ App.UI = Ext.extend(Ext.Panel, {
 		var store = list.getStore();
 		var rec = store.getAt(index);
 		
+		this.list = list;
+		this.list.setVisible(false);
+		
 		var html = new Ext.Template('<img class="qrcode-popup" src="{image}" />').apply(rec.data);
 		
 		var panel = new Ext.Panel({
@@ -97,12 +111,16 @@ App.UI = Ext.extend(Ext.Panel, {
 	},
 	
 	panelTap: function() {
+		this.list.setVisible(true);
 		this.detailPanel.hide();
+		delete this.list;
 	},
 	
 	cleanUp: function() {
+		this.list.setVisible(true);
 		this.detailPanel.destroy();
 		delete this.detailPanel;
+		delete this.list;
 	},
 	
 	createQRCode: function() {
@@ -177,7 +195,7 @@ App.UI = Ext.extend(Ext.Panel, {
                 } else {
 					ctx.fillStyle = "rgb(255, 255, 255)";
                 }
-				ctx.fillRect ((blockSize*r), (blockSize*c), blockSize, blockSize);
+				ctx.fillRect ((blockSize*c), (blockSize*r), blockSize, blockSize);
             }
         }
 		
