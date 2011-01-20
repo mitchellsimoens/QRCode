@@ -58,7 +58,7 @@ App.UI = Ext.extend(Ext.Panel, {
 						'<div class="qrcode-info">',
 							'{data}<br>',
 						'</div>',
-						'<img src="data:image/png;base64,{image}" />',
+						'<img src="{image}" />',
 					'</div>',
 				'</tpl>'
 			),
@@ -73,7 +73,7 @@ App.UI = Ext.extend(Ext.Panel, {
 		var store = list.getStore();
 		var rec = store.getAt(index);
 		
-		var html = new Ext.Template('<img src="data:image/png;base64,{image}" />').apply(rec.data);
+		var html = new Ext.Template('<img class="qrcode-popup" src="{image}" />').apply(rec.data);
 		
 		var panel = new Ext.Panel({
 			floating: true,
@@ -106,10 +106,10 @@ App.UI = Ext.extend(Ext.Panel, {
 	},
 	
 	createQRCode: function() {
-		if (!navigator.onLine) {
-			Ext.Msg.alert("Offline", "You are currently Offline and cannot create new QR Codes", Ext.emptyFn);
-			return false;
+		if (this.items.getCount() === 2) {
+			return ;
 		}
+		
 		var sizeOpt = [];
 		for (var i = 1; i <= 10; i++) {
 			sizeOpt.unshift({ text: i, value: i });
@@ -153,36 +153,47 @@ App.UI = Ext.extend(Ext.Panel, {
 	
 	doSave: function() {
 		var values = this.getComponent(1).getValues();
-		this.doCreateQRCode(values);
-	},
-	
-	doCreateQRCode: function(params) {
-		this.Mask = new Ext.LoadMask(Ext.getBody(), { msg: "Creating QR Code..." });
-		this.Mask.show();
-		Ext.Ajax.request({
-			url: "createQRCode.php",
-			scope: this,
-			params: params,
-			success: this.handleResponse,
-			failure: this.handleResponse
-		});
-	},
-	
-	handleResponse: function(response) {
-		this.Mask.hide();
-		if (response.status !== 200) {
-			return ;
-		}
 		
-		var result = Ext.decode(response.responseText);
+		var qr = new QRCode(values.pointSize, QRErrorCorrectLevel[values.correctionLevel]);
+        
+        qr.addData(values.data);
+        
+        qr.make();
 		
-		Ext.applyIf(result, {
-			created: new Date()
-		});
+		var blockSize = 10;
+		var canvasSize = qr.getModuleCount() * blockSize;
 		
-		this.saveOffline(result);
+		var el = Ext.get("canvas-wrap");
 		
-		this.doCancel();
+		el.update("<canvas id='canvas' width='"+canvasSize+"' height='"+canvasSize+"'></canvas>");
+		
+		var canvas = document.getElementById("canvas");
+		var ctx = canvas.getContext("2d");
+		
+		for (var r = 0; r < qr.getModuleCount(); r++) {
+            for (var c = 0; c < qr.getModuleCount(); c++) {
+                if (qr.isDark(r, c) ) {
+					ctx.fillStyle = "rgb(0,0,0)";
+                } else {
+					ctx.fillStyle = "rgb(255, 255, 255)";
+                }
+				ctx.fillRect ((blockSize*r), (blockSize*c), blockSize, blockSize);
+            }
+        }
+		
+		var base64 = canvas.toDataURL();
+		
+		var obj = {
+			correctionLevel: values.correctinLevel,
+			created: new Date(),
+			data: values.data,
+			image: base64,
+			pointSize: values.pointSize
+		};
+		
+		this.saveOffline(obj);
+		
+		this.setActiveItem(0, { type: "slide", reverse: true });
 	},
 	
 	saveOffline: function(obj) {

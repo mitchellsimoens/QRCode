@@ -6,6 +6,8 @@
 	<link rel="stylesheet" href="../sencha-touch-1.0.1a/resources/css/sencha-touch.css" type="text/css">
 	<script type="text/javascript" src="../sencha-touch-1.0.1a/sencha-touch-debug.js"></script>
 	
+	<script type="text/javascript" src="js/qrcode.js"></script>
+	
 	<script type="text/javascript" src="js/App.UI.js"></script>
 	<script type="text/javascript" src="js/App.js"></script>
 	
@@ -20,11 +22,17 @@
 		.qrcode img {
 			width: 50%;
 		}
+		.qrcode-popup {
+			width: 100%;
+		}
+		#canvas-wrap {
+			display: none;
+		}
 	</style>
 </head>
 
 <body>
-
+<div id="canvas-wrap"></div>
 </body>
 
 </html>
