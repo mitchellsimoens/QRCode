@@ -125,7 +125,7 @@ App.UI = Ext.extend(Ext.Panel, {
 					{ text: "M", value: "M" },
 					{ text: "L - smallest", value: "L" }
 				] },
-				{ name: "pointSize", label: "Matrix Point Size", options: sizeOpt },
+				{ name: "pointSize", label: "Matrix Point Size", value: 4, options: sizeOpt },
 				{ xtype: "textareafield", name: "data", label: "Data" },
 				{ xtype: "fieldset", layout: "hbox", defaults: { flex: 1 }, items: [
 					{ xtype: "button", text: "Cancel", ui: "decline", scope: this, handler: this.doCancel },
