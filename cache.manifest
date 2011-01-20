@@ -1,0 +1,9 @@
+CACHE MANIFEST
+#v5
+
+js/App.js
+js/App.UI.js
+js/qrcode.js
+
+sencha-touch-1.0.1a/sencha-touch.js
+sencha-touch-1.0.1a/resources/css/sencha-touch.css
