@@ -67,9 +67,8 @@ App.UI = Ext.extend(Ext.Panel, {
 				'<tpl for=".">',
 					'<div class="qrcode">',
 						'<div class="qrcode-info">',
-							'{data}<br>',
+							'{data} - Tap to view',
 						'</div>',
-						'<img src="{image}" />',
 					'</div>',
 				'</tpl>'
 			),
